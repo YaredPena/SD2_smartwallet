@@ -2,7 +2,7 @@
 
 ## Overview
 
-This backend server is implemented using **Node.js**, **Express.js**, and integrates with the **Plaid API** to enable financial data aggregation. Currently, endpoints for user registration, login, logout, and retrieving transactions from financial institutions are operational. Future implementation currentlu in progress will include user authentication via **JWT** and **bcrypt**.
+This backend server is implemented using **Node.js**, **Express.js**, and integrates with the **Plaid API** to enable financial data aggregation. Currently, endpoints for user registration, login, logout, and retrieving transactions from financial institutions are operational. Future implementation currently in progress will include user authentication via **JWT** and **bcrypt**.
 
 ## Features
 
