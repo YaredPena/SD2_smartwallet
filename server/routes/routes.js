@@ -50,7 +50,8 @@ router.post("/login", async (req, res) => {
 // (ISSUE #2: we need a user logout endpoint)
 router.post('/logout', async (req, res) => {
   
-  try { await res.send('hi logout'); // needs actual user logout functionality.
+  try { 
+    await res.send('hi logout'); // needs actual user logout functionality.
 
     console.log("Logout successful for user ID:", user.userId);
     res.send({ id: user.userId });
