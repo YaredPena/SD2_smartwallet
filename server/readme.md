@@ -33,7 +33,8 @@ Ensure you have the following installed:
    ```
 2. **Install dependencies:**
    ```sh
-   npm install
+   npm install express bcryptjs jsonwebtoken dotenv mongoose plaid cors body-parser
+
    ```
 3. **Set up environment variables:** Create a `.env` file in the root directory and add:
    ```env
