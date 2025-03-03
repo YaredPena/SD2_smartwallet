@@ -41,7 +41,6 @@ Ensure you have the following installed:
    PORT=5000
    MONGO_URI=your_mongo_connection_string
    JWT_SECRET=your_jwt_secret
-   BCRYPT_SALT_ROUNDS=10
    PLAID_CLIENT_ID=your_plaid_client_id
    PLAID_SECRET=your_plaid_secret
    PLAID_ENV=sandbox
