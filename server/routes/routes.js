@@ -14,7 +14,7 @@ const PLAID_COUNTRY_CODES = (process.env.PLAID_COUNTRY_CODES || 'US').split(
   ',',
 );
 
-//200
+//200 works but when there is multiple request, 500 error
 router.post("/signup", async (req, res) => {
   let { email, password } = req.body;
 

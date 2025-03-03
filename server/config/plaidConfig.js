@@ -1,4 +1,4 @@
-const { Configuration, PlaidApi, PlaidEnvironments}  = require('plaid');
+const { Configuration, PlaidApi, PlaidEnvironments, Products}  = require('plaid');
 
 // this is straight from plaid's quickstart app
 const plaidConfig = new Configuration({
@@ -14,4 +14,4 @@ const plaidConfig = new Configuration({
 
 const plaidClient = new PlaidApi(plaidConfig);
 
-module.exports = { plaidClient };
+module.exports = { plaidClient, Products };

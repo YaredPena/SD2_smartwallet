@@ -16,6 +16,17 @@ app.listen(APP_PORT, () => {
     console.log(`Server started @ http://localhost:${APP_PORT}`);
 });
 
+// const MONGO_URI = process.env.DB_URL;
+// if (!MONGO_URI) {
+//     console.error("Error: Missing MONGO_URI in environment variables.");
+//     process.exit(1); // Exit process if no MongoDB URI
+// }
+
+// // Connect to MongoDB
+// mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+//     .then(() => console.log("MongoDB Connected"))
+//     .catch(err => console.error("MongoDB Connection Error:", err));
+
 const database = mongoose.connection;
 mongoose.connect(process.env.DB_URL);
 
