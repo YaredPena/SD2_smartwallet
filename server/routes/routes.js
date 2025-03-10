@@ -1,9 +1,12 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require("../models/User"); 
 const { plaidClient, Products } = require('../config/plaidConfig');
+const JWT_SECRET = process.env.JWT_SECRET;
 
-/// I NEED JWT + BCRYPT
+/// Please review JWT and Bcrypt
 
 // stole this from plaid quickstart
 const PLAID_PRODUCTS = (process.env.PLAID_PRODUCTS || Products.Transactions).split(
@@ -14,13 +17,21 @@ const PLAID_COUNTRY_CODES = (process.env.PLAID_COUNTRY_CODES || 'US').split(
   ',',
 );
 
-//200 works but when there is multiple request, 500 error
+// 200 Implemented JWT for session management and Bcrypt for hashing
+// fixed for existing user
 router.post("/signup", async (req, res) => {
   let { email, password } = req.body;
-
   let newUser = new User({ email, password });
 
   try {
+    const existingUser = await User.findOne({ email }); // Check if user exists
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash password
+    const newUser = new User({ email, password: hashedPassword });
+
     const user = await newUser.save();
     console.log("User created with ID:", user.userId);
     res.send({ message: `User created with ID: ${user.userId}`, userId: user.userId });
@@ -29,7 +40,8 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-//200  (ISSUE #1: userid not retained after signout)
+//200 (ISSUE #2: userid not retained after signin)
+// jwt token implementation 
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
 
@@ -40,18 +52,26 @@ router.post("/login", async (req, res) => {
       return res.status(400).send({ message: "Invalid email or password" });
     }
 
-    console.log("Login successful for user ID:", user.userId);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    // Generate JWT Token
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ message: 'Login successful for user id', token, userId: user._id });
     res.send({ id: user.userId });
   } catch (error) {
     res.status(500).send({ message: `Error during login: ${error.message}` });
   }
 });
 
-// (ISSUE #2: we need a user logout endpoint)
+// 200 (ISSUE #3: user logout endpoint just returns a message, no actual logout functionality)
+// can be handled on client side by clearing token
 router.post('/logout', async (req, res) => {
   
   try { 
-    await res.send('hi logout'); // needs actual user logout functionality.
+    await res.send('hi logout'); // message
 
     console.log("Logout successful for user ID:", user.userId);
     res.send({ id: user.userId });
@@ -62,7 +82,7 @@ router.post('/logout', async (req, res) => {
 
 });
 
-//200 
+//200 works
 router.post("/create_link_token", async (req, res) => {
   const { uid } = req.body;
 
