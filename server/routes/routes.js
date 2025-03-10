@@ -6,7 +6,7 @@ const User = require("../models/User");
 const { plaidClient, Products } = require('../config/plaidConfig');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-/// Please review JWT and Bcrypt
+/// Please review JWT and Bcrypt implementation
 
 // stole this from plaid quickstart
 const PLAID_PRODUCTS = (process.env.PLAID_PRODUCTS || Products.Transactions).split(
