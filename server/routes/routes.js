@@ -1,10 +1,10 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require("../models/User"); 
 const { plaidClient, Products } = require('../config/plaidConfig');
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 /// Please review JWT and Bcrypt implementation
 
