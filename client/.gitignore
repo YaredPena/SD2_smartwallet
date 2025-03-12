@@ -1,5 +1,6 @@
 .env
-
+.vite
+node_modules
 # Logs
 logs
 *.log
