@@ -62,15 +62,18 @@ const PieChart = ({ transactions }) => {
       legend: {
         position: "right",
         labels: {
-          color: "#333",
-          padding: 16,
+          color: "#fff",
+          padding: 10,
+          font: {
+            size: 14
+          }
         },
       },
       datalabels: {
         color: "#fff",
         font: {
           weight: "bold",
-          size: 14,
+          size: 10,
         },
         formatter: (value) => {
           const percentage = (value / totalSum) * 100;
@@ -91,11 +94,10 @@ const PieChart = ({ transactions }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Spending by Category</h2>
+    <div className="w-fit h-fit max-w-2xl mx-auto p-4 bg-transparent shadow-md rounded-lg">
       <div className="flex justify-center items-center">
         {labels.length > 0 ? (
-          <div className="w-full max-w-xl h-[500px]">
+          <div className="w-full max-w-xl justify-between h-[300px]">
             <Pie data={data} options={options} />
           </div>):(<p>No transactions available.</p>)
         }

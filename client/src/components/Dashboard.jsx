@@ -1,8 +1,52 @@
-import React from 'react';
-//import PieChart from '../components/PieChart';
-import Sidebar from "../components/sideBar";
+
+'use client';
+
+import React, { useEffect, useState, useMemo } from 'react';
+import Sidebar from "../components/sideBar"
+import axios from 'axios';
+import PieChart from './PieChart';
+
 
 const Dashboard = () => {
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]); 
+
+  // Fetch transactions from the server
+  // utilized session storage to avoid re-fetching
+  // and to avoid using the access token in the URL
+  useEffect(() => {
+    const storedAccessToken = sessionStorage.getItem('accessToken');
+    if (storedAccessToken) {
+      axios.post(`${import.meta.env.VITE_API_URL}/get_transactions`, {
+        access_token: storedAccessToken,
+      })
+      .then((response) => {
+        const { transactions } = response.data;
+        setTransactions(transactions);
+        setFilteredTransactions(transactions);
+      })
+      .catch(() => {
+        console.log('Failed to fetch transactions');
+      });
+    }
+  }, []);
+
+  // filter by days/weeks/months utilize days for accurate and easy logic 
+
+  const handleDayFilter = (days) => {
+    const now = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(now.getDate() - days); // subtract days from current date
+
+    const filtered = transactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return transactionDate >= pastDate && transactionDate <= now;
+    });
+
+    console.log(`Filtered for last ${days} days:`, filtered);
+    setFilteredTransactions(filtered);
+  };
+
   return (
     <div className="flex h-screen bg-[#1B203F] text-white">
       <Sidebar />
@@ -12,34 +56,41 @@ const Dashboard = () => {
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-[#2C325C] p-6 rounded-2xl shadow-md col-span-3 min-h-[250px]">
           <h2 className="text-2xl mb-4">Your Financial Dashboard</h2>
-          <p className="mb-4">Welcome back Daniel</p>
+          <p className="mb-4">Welcome back Daniel</p> {/* need to fetch account user */}
           <div className="flex gap-2">
-            <button className="bg-[#2C325C] text-white py-2 px-4 rounded-md">12M</button>
-            <button className="bg-white text-[#1B203F] py-2 px-4 rounded-md">1M</button>
-            <button className="bg-[#2C325C] text-white py-2 px-4 rounded-md">1W</button>
+          {/* 12 month logic & 6 month logic may or may not work, so the filter below works */}
+          <button
+              onClick={() => handleDayFilter(14)} // filter last 2 weeks
+              className="p-2 bg-[#3a3f66] text-white rounded-lg hover:bg-[#555a7c]"
+            >
+              2 week
+            </button>
+            <button
+              onClick={() => handleDayFilter(30)} // filter last month
+              className="p-2 bg-[#3a3f66] text-white rounded-lg hover:bg-[#555a7c]"
+            >
+              1 Month
+            </button>
+            <button
+              onClick={() => handleDayFilter(90)} // filter last 3 months
+              className="p-2 bg-[#3a3f66] text-white rounded-lg hover:bg-[#555a7c]"
+            >
+              3 Months
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-[20fr_16fr] gap-5 mt-4">
+      <div className="grid grid-cols-[20fr_16fr] gap-1 mt-4">
         {/* Left Section */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
           {/* Spending Overview */}
           <div className="bg-[#2C325C] p-6 rounded-2xl shadow-md h-100">
-            <h3 className="text-lg mb-4">My Spending on All Credit Cards for November</h3>
-            <div className="flex items-center gap-8">
-              <div className="w-36 h-36 rounded-full flex items-center justify-center text-2xl bg-gradient-to-tr from-[#7c3aed] via-[#10b981] to-[#3b82f6]">
-                $6,000
-              </div>
-              <ul className="space-y-2">
-                <li><span className="inline-block w-2.5 h-2.5 rounded-full bg-[#7c3aed] mr-2"></span>Entertainment - $1,500/$2,000</li>
-                <li><span className="inline-block w-2.5 h-2.5 rounded-full bg-[#10b981] mr-2"></span>Food - $1,000/$1,500</li>
-                <li><span className="inline-block w-2.5 h-2.5 rounded-full bg-[#3b82f6] mr-2"></span>Rent - $2,500/$2,500</li>
-              </ul>
+            <h3 className="text-lg mb-4">My Spending Overview</h3>
+            <div className="flex items-center gap-1">
+              <PieChart transactions={filteredTransactions} /> 
             </div>
-            {/* filteredTransaction hook should be imported here */}
-            {/* <PieChart transactions={filteredTransactions} />  */}
           </div>
 
           {/* Improving Financial Habits */}

@@ -65,19 +65,22 @@ const TransactionsPage = () => {
         const accessTokenResponse = await axios.post(`${import.meta.env.VITE_API_URL}/get_access_token`, {
           public_token: publicToken,
         });
-
+  
         const { access_token } = accessTokenResponse.data;
         if (access_token) {
+          // Store the access token in session storage
+          sessionStorage.setItem('accessToken', access_token);
+  
           const transactionsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/get_transactions`, {
             access_token,
           });
-
+  
           const { transactions, accounts } = transactionsResponse.data;
           if (transactions && accounts) {
             const sortedTransactions = transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
             setTransactions(sortedTransactions);
             setAccounts(accounts);
-            setFilteredTransactions(sortedTransactions); 
+            setFilteredTransactions(sortedTransactions);
           } else {
             setError('Failed to fetch transactions.');
           }
@@ -91,7 +94,7 @@ const TransactionsPage = () => {
       }
     },
   });
-
+  
   const getAccountDetails = (accountId) => {
     const account = accounts.find(acc => acc.account_id === accountId);
     return account ? `${account.name}` : 'Unknown Account';
