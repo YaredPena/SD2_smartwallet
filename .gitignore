@@ -1,0 +1,8 @@
+# ignore fields
+node_modules/
+package-lock.json
+package.json
+dist/
+yarn-error.log
+yarn.lock
+.vscode/
